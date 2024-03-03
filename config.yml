@@ -1,0 +1,5 @@
+# https://cryptography.io/en/latest/hazmat/primitives/key-derivation-functions/
+Salt: "SHOULDBETOTALYRANDOM"
+IssuerName: "appName"
+Iterations: 9000
+Length: 16
