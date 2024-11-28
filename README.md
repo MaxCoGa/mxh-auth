@@ -1,19 +1,30 @@
 # mxh-auth
 
-python -m venv mxh-auth-venv
+auth based around axum
 
+### functionality:
+- [x] login
+- [x] logout
+- [x] session based
+- [x] persistent session
+- [x] create a new user
+- [ ] delete a user
+- [ ] role based access
+- [ ] topt
+- [ ] config file
 
-source mxh-auth-venv/bin/activate
+### usage:
+1. create db
+    - export DATABASE_URL="sqlite://./sessions.db"
+    - sqlx database create
+    - sqlx migrate add init
+2. run
+    - nixos : RUSTUP_TOOLCHAIN=stable cargo run
+    - else: cargo run
 
-win:
-Set-ExecutionPolicy Unrestricted -Scope Process
-.\mxh-auth-venv\Scripts\Activate.ps1
-Set-ExecutionPolicy Default -Scope Process
+### version:
+- rustc 1.82.0
+- cargo 1.82.0
 
-add module: pip freeze > requirements.txt 
-
-pip install -r requirements.txt
-
-python auth.py 
-
-deactivate
+### docs:
+- sqlx: https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md
