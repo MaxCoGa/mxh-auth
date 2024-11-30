@@ -8,9 +8,9 @@ auth based around axum
 - [x] session based
 - [x] persistent session
 - [x] create a new user
-- [ ] delete a user
+- [x] delete a user
 - [ ] role based access
-- [ ] topt
+- [ ] totp
 - [ ] config file
 
 ### usage:

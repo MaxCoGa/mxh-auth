@@ -38,7 +38,8 @@ pub fn router() -> Router<()> {
         .route("/signin", get(self::get::signin))
         .route("/login", post(self::post::login))
         .route("/login", get(self::get::login))
-        .route("/logout", get(self::get::logout))
+        .route("/delete", get(self::get::delete))
+        .route("/logout", get(self::get::logout)) //TODO: if not login redirect to login page
 }
 
 mod post {
@@ -187,6 +188,46 @@ mod get {
             messages: messages.into_iter().collect(),
             next,
         }.into_response()
+    }
+
+    pub async fn delete(
+        auth_session: AuthSession,
+        messages: Messages
+    ) -> impl IntoResponse {
+        println!("delete page...");
+
+        if let Some(user) = auth_session.user {
+            println!("user is login attempt to delete {}", user.username);
+
+            let backend = auth_session.backend.clone(); // Access the Backend from AuthSession
+
+            // messages.error("Invalid credentials");
+            // return redirect_to_login("/signin", creds.next).into_response();
+            match backend.remove_user(&user.username).await {
+                Ok(_) => {
+                    // User remove
+                    messages.success(format!("Successfully deleted {}", user.username));
+                    return Redirect::to("/logout").into_response();
+                    // match auth_session.logout().await {
+                    //     Ok(_) => Redirect::to("/login").into_response(),
+                    //     Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+                    // }
+                }
+                Err(err) => {
+                    messages.error(format!("Failed to remove user: {}", err));
+                    return Redirect::to("/login").into_response();
+                }
+            }
+            // return Redirect::to("/").into_response();
+            // Redirect::to("/login").into_response()
+        } else {
+            println!("user is not login attempt failed!");
+            // Not logged in, show the login page
+            // Continue to the rest of the function to render the login page
+            Redirect::to("/login").into_response()
+        };
+        
+        Redirect::to("/login").into_response()
     }
 
     pub async fn logout(mut auth_session: AuthSession) -> impl IntoResponse {

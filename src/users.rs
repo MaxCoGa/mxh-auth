@@ -74,6 +74,7 @@ impl Backend {
             .to_string();
 
         // export DATABASE_URL="sqlite://./sessions.db"
+        // TODO: switch to query_as
         let result = sqlx::query!(
                 "INSERT INTO users (username, password) VALUES (?, ?)",
                 username,
@@ -93,6 +94,19 @@ impl Backend {
         // The `last_insert_rowid()` function returns the ROWID of the last row insert from the database connection which invoked the function.
         let user_id = result.last_insert_rowid();
         Ok(user_id)
+    }
+
+    pub async fn remove_user(&self, username: &str) -> Result<Option<()>, Error> {    
+        sqlx::query!("DELETE FROM users WHERE username = ?", username)
+            .execute(&self.db)
+            .await
+            .map(|_| None)
+            .map_err(Error::from)
+        // let result = sqlx::query_as("DELETE FROM users WHERE username = ?")
+        //     .bind(username)
+        //     .fetch_optional(&self.db)
+        //     .await?;
+        // Ok(result.map(|_|()))
     }
 
 }
